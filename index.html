@@ -877,7 +877,7 @@ Para cada formato, use o título como cabeçalho (### NomeDoFormato) e escreva o
         'x-api-key': apiKey,
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1800,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -1039,7 +1039,7 @@ Cada objeto deve ter:
         'x-api-key': apiKey,
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: systemPrompt,
         messages:[{ role:'user', content: topic }]
