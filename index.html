@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pauta IA — Instagram</title>
+<style>
+:root {
+  --pink:        #D4537E;
+  --pink-light:  #FBEAF0;
+  --pink-dark:   #72243E;
+  --pink-mid:    #993556;
+  --teal-light:  #E1F5EE;
+  --teal-dark:   #085041;
+  --purple-light:#EEEDFE;
+  --purple-dark: #3C3489;
+  --amber-light: #FAEEDA;
+  --amber-dark:  #633806;
+  --blue-light:  #E6F1FB;
+  --blue-dark:   #0C447C;
+  --gray-bg:     #F7F5F2;
+  --white:       #ffffff;
+  --text:        #1a1a1a;
+  --text-muted:  #6b6b6b;
+  --border:      #e8e4df;
+  --radius:      14px;
+  --radius-sm:   10px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--gray-bg);
+  color: var(--text);
+  min-height: 100vh;
+  overscroll-behavior: none;
+}
+
+.app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding-bottom: calc(80px + var(--safe-bottom));
+}
+
+/* ── TOP BAR ─────────────────────────────────────── */
+.top-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.top-bar-icon {
+  width: 38px; height: 38px;
+  background: var(--pink-light);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.top-bar h1 { font-size: 16px; font-weight: 700; color: var(--text); }
+.top-bar p  { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+/* ── TABS ─────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1rem;
+  position: sticky;
+  top: 67px;
+  z-index: 19;
+}
+.tab-btn {
+  flex: 1;
+  padding: 11px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.tab-btn.active { color: var(--pink); border-bottom-color: var(--pink); }
+
+/* ── TAB PANELS ───────────────────────────────────── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── SECTION / CARD ───────────────────────────────── */
+.section { padding: 1rem 1rem 0; }
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin-bottom: 10px;
+}
+.card-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+/* ── FIELDS ───────────────────────────────────────── */
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 16px; /* ← previne zoom iOS */
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus { border-color: var(--pink); }
+.field textarea { resize: none; line-height: 1.55; }
+.field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px; }
+
+.api-key-wrapper { position: relative; }
+.api-key-wrapper input { padding-right: 44px; font-family: 'Courier New', monospace; font-size: 14px; letter-spacing: 0.05em; }
+.toggle-key {
+  position: absolute; right: 10px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  cursor: pointer; font-size: 18px; color: var(--text-muted);
+  padding: 6px; min-width: 44px; min-height: 44px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── DIAS ─────────────────────────────────────────── */
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+.day-btn {
+  padding: 10px 0;       /* altura de toque >= 44px */
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  min-height: 44px;
+}
+.day-btn.active {
+  background: var(--pink-light);
+  border-color: var(--pink);
+  color: var(--pink-dark);
+}
+
+/* ── TAGS ─────────────────────────────────────────── */
+.tag-row { display: flex; flex-wrap: wrap; gap: 7px; }
+.tag {
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.15s;
+  user-select: none;
+  min-height: 36px;
+  display: flex; align-items: center;
+}
+.tag.on { background: var(--pink-light); border-color: var(--pink); color: var(--pink-dark); }
+
+/* ── BOTÃO FIXO GERAR ─────────────────────────────── */
+.sticky-gen {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 520px;
+  padding: 12px 1rem calc(12px + var(--safe-bottom));
+  background: linear-gradient(to top, var(--gray-bg) 60%, transparent);
+  z-index: 18;
+}
+.gen-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--pink);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.15s, transform 0.1s;
+  box-shadow: 0 4px 20px rgba(212,83,126,.35);
+}
+.gen-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.gen-btn:not(:disabled):active { transform: scale(0.98); }
+
+/* ── RESULTADOS ───────────────────────────────────── */
+.results { padding: 0.75rem 1rem 0; }
+
+.result-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin-bottom: 10px;
+  animation: fadeUp 0.3s ease;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+.result-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 700;
+  padding: 4px 11px; border-radius: 20px;
+  margin-bottom: 10px;
+}
+.result-body {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+.result-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.copy-btn, .carousel-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: 12px; font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  min-height: 36px;
+}
+.copy-btn:hover { background: var(--gray-bg); }
+.copy-btn.copied { color: #0F6E56; border-color: #1D9E75; background: var(--teal-light); }
+.carousel-btn {
+  background: var(--purple-light);
+  border-color: #b8b3f8;
+  color: var(--purple-dark);
+}
+.carousel-btn:hover { background: #e0deff; }
+.carousel-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── SPINNER ──────────────────────────────────────── */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+.spinner-sm {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(60,52,137,0.3);
+  border-top-color: var(--purple-dark);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SKELETON LOADER ──────────────────────────────── */
+.skeleton-wrap { padding: 0.75rem 1rem 0; }
+.skeleton-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin-bottom: 10px;
+}
+.skel {
+  background: linear-gradient(90deg, #f0ede9 25%, #e8e4df 50%, #f0ede9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+@keyframes shimmer { to { background-position: -200% center; } }
+.skel-badge { height: 22px; width: 100px; border-radius: 20px; }
+.skel-line  { height: 14px; }
+.skel-line.w90 { width: 90%; }
+.skel-line.w75 { width: 75%; }
+.skel-line.w60 { width: 60%; }
+
+/* ── ESTADO VAZIO / ERRO ──────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+.empty-state .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+.empty-state p { font-size: 14px; line-height: 1.7; }
+
+.error-card {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  font-size: 14px;
+  color: #991B1B;
+  line-height: 1.6;
+}
+
+/* ── HISTÓRICO ────────────────────────────────────── */
+.history-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.clear-btn {
+  font-size: 12px; color: var(--text-muted);
+  background: none; border: none;
+  cursor: pointer; padding: 6px 8px;
+  border-radius: 6px; min-height: 36px;
+}
+.clear-btn:hover { background: var(--gray-bg); }
+.history-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  min-height: 48px;
+}
+.history-item:last-child { border-bottom: none; }
+.history-label { font-size: 13px; color: var(--text); transition: color 0.15s; }
+.history-item:active .history-label { color: var(--pink); }
+.history-date { font-size: 11px; color: var(--text-muted); flex-shrink: 0; margin-left: 8px; }
+.history-empty { font-size: 13px; color: var(--text-muted); text-align: center; padding: 1.25rem 0; }
+.counter {
+  display: inline-block;
+  background: var(--pink-light);
+  color: var(--pink-dark);
+  font-size: 11px; font-weight: 700;
+  padding: 1px 7px; border-radius: 10px;
+  margin-left: 6px;
+}
+
+/* ── MODAL CONFIRMAÇÃO ────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 100;
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--white);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 1.5rem 1.25rem calc(1.5rem + var(--safe-bottom));
+  width: 100%; max-width: 520px;
+  transform: translateY(40px);
+  transition: transform 0.25s cubic-bezier(.32,.72,0,1);
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.modal-box p  { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-cancel {
+  flex: 1; padding: 13px;
+  background: var(--gray-bg); border: none;
+  border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+  color: var(--text-muted); cursor: pointer;
+}
+.modal-confirm {
+  flex: 1; padding: 13px;
+  background: #FEF2F2; border: none;
+  border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+  color: #991B1B; cursor: pointer;
+}
+
+/* ── CARROSSEL MODAL ──────────────────────────────── */
+.carousel-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 110;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  overflow-y: auto;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+  padding: 1rem 1rem calc(1rem + var(--safe-bottom));
+}
+.carousel-overlay.open { opacity: 1; pointer-events: all; }
+.carousel-header {
+  width: 100%; max-width: 420px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
+}
+.carousel-header h2 { font-size: 16px; font-weight: 700; color: white; }
+.carousel-close {
+  background: rgba(255,255,255,0.15); border: none;
+  color: white; font-size: 20px; border-radius: 50%;
+  width: 36px; height: 36px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.carousel-slides-wrap {
+  width: 100%; max-width: 420px;
+}
+.carousel-slide-item {
+  background: var(--white);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.carousel-slide-item svg {
+  width: 100%;
+  display: block;
+}
+.carousel-slide-caption {
+  padding: 10px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.carousel-slide-caption span {
+  font-size: 12px; color: var(--text-muted); font-weight: 600;
+}
+.dl-btn {
+  padding: 7px 13px;
+  background: var(--pink-light);
+  border: none; border-radius: 8px;
+  font-size: 12px; font-weight: 700;
+  color: var(--pink-dark); cursor: pointer;
+  display: flex; align-items: center; gap: 5px;
+}
+.carousel-generate-area {
+  width: 100%; max-width: 420px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 12px;
+}
+.carousel-generate-area h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.carousel-generate-area p  { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+.carousel-num-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.num-btn {
+  flex: 1; padding: 9px 0;
+  border: 1.5px solid var(--border);
+  border-radius: 8px; background: transparent;
+  font-size: 13px; font-weight: 600;
+  color: var(--text-muted); cursor: pointer;
+  transition: all 0.15s;
+}
+.num-btn.active { background: var(--purple-light); border-color: #b8b3f8; color: var(--purple-dark); }
+.gen-carousel-btn {
+  width: 100%; padding: 13px;
+  background: var(--purple-dark);
+  color: white; border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px; font-weight: 700;
+  cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  gap: 8px;
+  transition: opacity 0.15s;
+}
+.gen-carousel-btn:disabled { opacity: 0.5; }
+
+/* ── RESULTADO NA ABA CARROSSEL ───────────────────── */
+#carouselPanel .empty-state { padding: 3rem 1rem; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-icon">📲</div>
+    <div>
+      <h1>Pauta IA</h1>
+      <p>Moda · Beleza · Maternidade · Lifestyle</p>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('pauta',this)">✨ Pauta</button>
+    <button class="tab-btn" onclick="switchTab('carrossel',this)">🖼 Carrosséis</button>
+    <button class="tab-btn" onclick="switchTab('historico',this)">📁 Histórico</button>
+  </div>
+
+  <!-- ════ ABA PAUTA ════ -->
+  <div class="panel active" id="pautaPanel">
+
+    <div class="section" style="padding-top:1rem">
+      <div class="card">
+        <div class="card-title">🔑 Chave de API</div>
+        <div class="field">
+          <label>Cole sua chave da Anthropic</label>
+          <div class="api-key-wrapper">
+            <input type="password" id="apiKey" placeholder="sk-ant-..." autocomplete="off" inputmode="text">
+            <button class="toggle-key" onclick="toggleKey()" aria-label="Mostrar/ocultar chave">👁</button>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);line-height:1.6">
+          Obtenha em <strong>console.anthropic.com</strong> → API Keys → Create Key.<br>
+          Salva só neste dispositivo.
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="card">
+        <div class="card-title">⚙️ Configurar pauta</div>
+
+        <div class="field">
+          <label>Dia da semana</label>
+          <div class="day-grid" id="dayGrid">
+            <button class="day-btn" onclick="selectDay(this,'Segunda')">Seg</button>
+            <button class="day-btn" onclick="selectDay(this,'Terça')">Ter</button>
+            <button class="day-btn" onclick="selectDay(this,'Quarta')">Qua</button>
+            <button class="day-btn" onclick="selectDay(this,'Quinta')">Qui</button>
+            <button class="day-btn" onclick="selectDay(this,'Sexta')">Sex</button>
+            <button class="day-btn" onclick="selectDay(this,'Sábado')">Sáb</button>
+            <button class="day-btn" onclick="selectDay(this,'Domingo')">Dom</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Foco do conteúdo (opcional)</label>
+          <input type="text" id="focus" placeholder="Ex: skincare, look de inverno, maternidade real…">
+        </div>
+
+        <div class="field">
+          <label>Formatos para gerar</label>
+          <div class="tag-row" id="formats">
+            <span class="tag on" onclick="this.classList.toggle('on')">Reels</span>
+            <span class="tag on" onclick="this.classList.toggle('on')">Carrossel</span>
+            <span class="tag on" onclick="this.classList.toggle('on')">Stories</span>
+            <span class="tag on" onclick="this.classList.toggle('on')">Legenda</span>
+            <span class="tag" onclick="this.classList.toggle('on')">Hashtags</span>
+            <span class="tag" onclick="this.classList.toggle('on')">CTA</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Tom do conteúdo</label>
+          <select id="tom">
+            <option>Descontraído e próximo</option>
+            <option>Inspirador e motivacional</option>
+            <option>Educativo e prático</option>
+            <option>Vulnerável e real</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-bottom:0">
+          <label>Detalhes extras (opcional)</label>
+          <textarea id="extras" rows="2" placeholder="Ex: incluir produto X, evitar tema Y, usar linguagem informal…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- resultados -->
+    <div class="results" id="results">
+      <div class="empty-state">
+        <div class="icon">📋</div>
+        <p>Configure acima e toque em<br><strong>Gerar pauta agora</strong> para começar.</p>
+      </div>
+    </div>
+
+    <!-- padding seguro antes do botão fixo -->
+    <div style="height:8px"></div>
+  </div>
+
+  <!-- ════ ABA CARROSSÉIS ════ -->
+  <div class="panel" id="carrosselPanel">
+    <div class="section" style="padding-top:1rem">
+      <div class="card carousel-generate-area" style="border:none;padding:0;background:transparent">
+        <div class="card" style="margin-bottom:10px">
+          <div class="card-title">🖼 Gerar carrossel</div>
+          <p style="font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:14px">
+            Escolha uma pauta gerada ou descreva o tema. A IA cria slides prontos para baixar.
+          </p>
+          <div class="field">
+            <label>Tema ou conteúdo do carrossel</label>
+            <textarea id="carouselTopic" rows="3" placeholder="Ex: 5 dicas de skincare matinal, rotina de beleza rápida, looks de inverno…"></textarea>
+          </div>
+          <div class="field">
+            <label>Número de slides</label>
+            <div class="carousel-num-row" id="numBtns">
+              <button class="num-btn" onclick="setNum(this,3)">3</button>
+              <button class="num-btn active" onclick="setNum(this,4)">4</button>
+              <button class="num-btn" onclick="setNum(this,5)">5</button>
+              <button class="num-btn" onclick="setNum(this,6)">6</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Paleta de cores</label>
+            <select id="paletteSelect">
+              <option value="pink">Rosa — identidade do perfil</option>
+              <option value="warm">Terracota quente</option>
+              <option value="sage">Verde sage suave</option>
+              <option value="midnight">Azul meia-noite</option>
+              <option value="cream">Creme neutro elegante</option>
+            </select>
+          </div>
+          <button class="gen-carousel-btn" id="genCarouselBtn" onclick="gerarCarrossel()">
+            <span id="carouselBtnIcon">🎨</span>
+            <span id="carouselBtnText">Criar slides</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="carouselResults">
+      <div class="empty-state" style="padding-top:1rem">
+        <div class="icon">🖼</div>
+        <p>Seus slides aparecerão aqui.<br>Configure e toque em <strong>Criar slides</strong>.</p>
+      </div>
+    </div>
+
+    <div style="height:8px"></div>
+  </div>
+
+  <!-- ════ ABA HISTÓRICO ════ -->
+  <div class="panel" id="historicoPanel">
+    <div class="section" style="padding-top:1rem">
+      <div class="card">
+        <div class="history-header">
+          <div class="card-title" style="margin-bottom:0">
+            📁 Pautas salvas
+            <span class="counter" id="histCount">0</span>
+          </div>
+          <button class="clear-btn" onclick="askClear()">Limpar tudo</button>
+        </div>
+        <div id="historyList"><div class="history-empty">Nenhuma pauta gerada ainda.</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- BOTÃO FIXO -->
+<div class="sticky-gen" id="stickyGen">
+  <button class="gen-btn" id="genBtn" onclick="gerar()">
+    <span id="btnIcon">✨</span>
+    <span id="btnText">Gerar pauta agora</span>
+  </button>
+</div>
+
+<!-- MODAL CONFIRMAR LIMPAR -->
+<div class="modal-overlay" id="clearModal" onclick="closeClearModal(event)">
+  <div class="modal-box">
+    <h3>Limpar histórico?</h3>
+    <p>Todas as pautas salvas serão apagadas permanentemente.</p>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeClearModal()">Cancelar</button>
+      <button class="modal-confirm" onclick="confirmClear()">Limpar tudo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   ESTADO
+══════════════════════════════════════════════════ */
+let selectedDay = '';
+let historyData = JSON.parse(localStorage.getItem('pauta_history') || '[]');
+let carouselSlideCount = 4;
+let activeTab = 'pauta';
+let lastGeneratedSections = [];
+let lastGeneratedDay = '';
+
+/* ══════════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════════ */
+function switchTab(tab, btn) {
+  activeTab = tab;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tab === 'pauta' ? 'pautaPanel' : tab === 'carrossel' ? 'carrosselPanel' : 'historicoPanel').classList.add('active');
+  btn.classList.add('active');
+  // mostrar/ocultar botão fixo
+  document.getElementById('stickyGen').style.display = tab === 'pauta' ? 'block' : 'none';
+}
+
+/* ══════════════════════════════════════════════════
+   DIAS
+══════════════════════════════════════════════════ */
+function initDay() {
+  const dayNames = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const btnLabels = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  // reordenar DOM: Seg primeiro
+  const order = [1,2,3,4,5,6,0];
+  const grid = document.getElementById('dayGrid');
+  const btns = [...grid.querySelectorAll('.day-btn')];
+  const todayIdx = new Date().getDay();
+
+  btns.forEach((b, i) => {
+    const dayIdx = order[i];
+    b.dataset.day = dayNames[dayIdx];
+    b.textContent = btnLabels[dayIdx];
+    b.onclick = () => selectDay(b, dayNames[dayIdx]);
+    if(dayIdx === todayIdx) {
+      b.classList.add('active');
+      selectedDay = dayNames[dayIdx];
+    }
+  });
+  if(!selectedDay) { btns[0].classList.add('active'); selectedDay = 'Segunda'; }
+}
+
+function selectDay(btn, day) {
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedDay = day;
+}
+
+/* ══════════════════════════════════════════════════
+   API KEY
+══════════════════════════════════════════════════ */
+function toggleKey() {
+  const inp = document.getElementById('apiKey');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+function getApiKey()  { return document.getElementById('apiKey').value.trim(); }
+function saveKey()    { const k = getApiKey(); if(k) localStorage.setItem('pauta_api_key', k); }
+function loadKey()    { const k = localStorage.getItem('pauta_api_key'); if(k) document.getElementById('apiKey').value = k; }
+function getFormats() { return [...document.querySelectorAll('#formats .tag.on')].map(t => t.textContent); }
+
+/* ══════════════════════════════════════════════════
+   PARSING / RENDER PAUTA
+══════════════════════════════════════════════════ */
+const badgeColors = {
+  'Reels':     {bg:'#FBEAF0', color:'#72243E'},
+  'Carrossel': {bg:'#E1F5EE', color:'#085041'},
+  'Stories':   {bg:'#EEEDFE', color:'#3C3489'},
+  'Legenda':   {bg:'#FAEEDA', color:'#633806'},
+  'Hashtags':  {bg:'#E6F1FB', color:'#0C447C'},
+  'CTA':       {bg:'#FAECE7', color:'#712B13'},
+};
+const badgeIcons = {
+  'Reels':'🎬','Carrossel':'🖼','Stories':'📱','Legenda':'✍️','Hashtags':'#️⃣','CTA':'💬'
+};
+
+function parseResult(text) {
+  const blocks = text.split(/\n(?=###?\s)/);
+  const sections = [];
+  for(const b of blocks) {
+    const lines = b.trim().split('\n');
+    const title = lines[0].replace(/^#+\s*/,'').trim();
+    const body = lines.slice(1).join('\n').replace(/\*\*(.*?)\*\*/g,'$1').trim();
+    if(title && body) sections.push({title, body});
+  }
+  if(!sections.length) sections.push({title:'Pauta gerada', body: text.trim()});
+  return sections;
+}
+
+function renderResults(sections, dia) {
+  lastGeneratedSections = sections;
+  lastGeneratedDay = dia;
+  let html = `<div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;padding:0 2px">
+    Pauta de <strong>${dia}</strong> — ${new Date().toLocaleDateString('pt-BR')}</div>`;
+  sections.forEach((s, i) => {
+    const key = Object.keys(badgeColors).find(k => s.title.toLowerCase().includes(k.toLowerCase())) || 'Legenda';
+    const c   = badgeColors[key] || {bg:'#F1EFE8', color:'#444441'};
+    const ic  = badgeIcons[key]  || '📝';
+    const hasCarousel = key === 'Carrossel';
+    html += `<div class="result-card">
+      <div class="result-badge" style="background:${c.bg};color:${c.color}">${ic} ${s.title}</div>
+      <div class="result-body" id="rb${i}">${s.body}</div>
+      <div class="result-actions">
+        <button class="copy-btn" id="cb${i}" onclick="copyBlock(${i})">📋 Copiar</button>
+        ${hasCarousel ? `<button class="carousel-btn" onclick="openCarouselFromPauta(${i})">🎨 Criar slides</button>` : ''}
+      </div>
+    </div>`;
+  });
+  document.getElementById('results').innerHTML = html;
+  window.scrollTo({top: document.getElementById('results').offsetTop - 130, behavior:'smooth'});
+}
+
+function copyBlock(i) {
+  const el  = document.getElementById('rb'+i);
+  const btn = document.getElementById('cb'+i);
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    btn.innerHTML = '✅ Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '📋 Copiar'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   SKELETON
+══════════════════════════════════════════════════ */
+function showSkeleton(count = 3) {
+  let html = '<div class="skeleton-wrap">';
+  for(let i = 0; i < count; i++) {
+    html += `<div class="skeleton-card">
+      <div class="skel skel-badge" style="margin-bottom:14px"></div>
+      <div class="skel skel-line w90"></div>
+      <div class="skel skel-line w75"></div>
+      <div class="skel skel-line w60"></div>
+    </div>`;
+  }
+  html += '</div>';
+  document.getElementById('results').innerHTML = html;
+}
+
+/* ══════════════════════════════════════════════════
+   GERAR PAUTA
+══════════════════════════════════════════════════ */
+async function gerar() {
+  const apiKey = getApiKey();
+  if(!apiKey) { showToast('Cole sua chave de API antes de gerar.', 'error'); return; }
+  const formatos = getFormats();
+  if(!formatos.length) { showToast('Selecione ao menos um formato.', 'error'); return; }
+
+  saveKey();
+  const dia    = selectedDay || 'hoje';
+  const foco   = document.getElementById('focus').value.trim();
+  const tom    = document.getElementById('tom').value;
+  const extras = document.getElementById('extras').value.trim();
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  document.getElementById('btnIcon').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('btnText').textContent = 'Gerando…';
+  showSkeleton(formatos.length);
+
+  const prompt = `Você é estrategista de conteúdo para Instagram. Perfil: moda, beleza, maternidade e lifestyle, 50k+ seguidores, foco em aumentar engajamento.
+
+Gere uma pauta completa para ${dia}${foco ? ', foco em: ' + foco : ''}.
+Tom: ${tom}.
+Formatos: ${formatos.join(', ')}.
+${extras ? 'Observações: ' + extras : ''}
+
+Para cada formato, use o título como cabeçalho (### NomeDoFormato) e escreva o conteúdo completo e específico logo abaixo. Seja criativo e use linguagem brasileira natural. Conteúdo pronto para usar, sem introduções genéricas.`;
+
+  try {
+    const resp = await fetch('/.netlify/functions/proxy', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1800,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if(!resp.ok) {
+      const err = await resp.json().catch(()=>({}));
+      throw new Error(err.error?.message || `Erro ${resp.status}`);
+    }
+
+    const data     = await resp.json();
+    const text     = (data.content||[]).map(c=>c.text||'').join('');
+    const sections = parseResult(text);
+    renderResults(sections, dia);
+    saveToHistory(dia, foco, formatos.join(', '), text);
+  } catch(e) {
+    document.getElementById('results').innerHTML =
+      `<div class="error-card"><strong>Erro:</strong> ${e.message}<br><br>Verifique sua chave de API e tente novamente.</div>`;
+  }
+
+  btn.disabled = false;
+  document.getElementById('btnIcon').textContent = '✨';
+  document.getElementById('btnText').textContent = 'Gerar pauta agora';
+}
+
+/* ══════════════════════════════════════════════════
+   HISTÓRICO
+══════════════════════════════════════════════════ */
+function saveToHistory(dia, foco, formatos, texto) {
+  const item = {
+    id: Date.now(), dia, foco, formatos,
+    date: new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}),
+    texto
+  };
+  historyData.unshift(item);
+  if(historyData.length > 20) historyData = historyData.slice(0,20);
+  localStorage.setItem('pauta_history', JSON.stringify(historyData));
+  renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('historyList');
+  document.getElementById('histCount').textContent = historyData.length;
+  if(!historyData.length){ el.innerHTML='<div class="history-empty">Nenhuma pauta gerada ainda.</div>'; return; }
+  el.innerHTML = historyData.map(h => `
+    <div class="history-item" onclick="loadHistoryItem(${h.id})">
+      <div>
+        <div class="history-label">${h.dia}${h.foco?' · '+h.foco:''} <span style="font-size:11px;color:var(--pink)">${h.formatos}</span></div>
+      </div>
+      <div class="history-date">${h.date}</div>
+    </div>`).join('');
+}
+
+function loadHistoryItem(id) {
+  const item = historyData.find(h => h.id === id);
+  if(!item) return;
+  const sections = parseResult(item.texto);
+  // vai para aba pauta
+  switchTab('pauta', document.querySelector('.tab-btn'));
+  renderResults(sections, item.dia);
+}
+
+function askClear() {
+  document.getElementById('clearModal').classList.add('open');
+}
+function closeClearModal(e) {
+  if(!e || e.target === document.getElementById('clearModal'))
+    document.getElementById('clearModal').classList.remove('open');
+}
+function confirmClear() {
+  historyData = [];
+  localStorage.removeItem('pauta_history');
+  renderHistory();
+  closeClearModal();
+}
+
+/* ══════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════ */
+function showToast(msg, type='info') {
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;bottom:calc(90px + var(--safe-bottom));left:50%;transform:translateX(-50%);
+    background:${type==='error'?'#991B1B':'#1a1a1a'};color:white;padding:10px 18px;
+    border-radius:30px;font-size:14px;font-weight:600;z-index:200;white-space:nowrap;
+    animation:fadeUp .2s ease;`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+/* ══════════════════════════════════════════════════
+   CARROSSEL — NÚMERO DE SLIDES
+══════════════════════════════════════════════════ */
+function setNum(btn, n) {
+  carouselSlideCount = n;
+  document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ══════════════════════════════════════════════════
+   PALETAS
+══════════════════════════════════════════════════ */
+const palettes = {
+  pink:     { bg:'#D4537E', text:'#FFFFFF', accent:'#FBEAF0', dark:'#72243E', light:'#FCF0F5' },
+  warm:     { bg:'#C4583C', text:'#FFFFFF', accent:'#FAEADA', dark:'#6B2716', light:'#FDF3EE' },
+  sage:     { bg:'#5A8A6A', text:'#FFFFFF', accent:'#E2F0E7', dark:'#1E4D2F', light:'#F0F8F2' },
+  midnight: { bg:'#1E3A5F', text:'#FFFFFF', accent:'#D6E4F5', dark:'#0A1F36', light:'#EEF4FC' },
+  cream:    { bg:'#3D3530', text:'#FFFFFF', accent:'#F5EFEA', dark:'#1A1210', light:'#FBF8F5' },
+};
+
+/* ══════════════════════════════════════════════════
+   CARROSSEL — ABRIR DO BOTÃO NA PAUTA
+══════════════════════════════════════════════════ */
+function openCarouselFromPauta(idx) {
+  const s = lastGeneratedSections[idx];
+  if(!s) return;
+  document.getElementById('carouselTopic').value = s.body.slice(0, 400);
+  // muda para aba carrossel
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  switchTab('carrossel', tabBtns[1]);
+  window.scrollTo({top: 0, behavior:'smooth'});
+}
+
+/* ══════════════════════════════════════════════════
+   GERAR CARROSSEL (via Claude API → JSON → SVG)
+══════════════════════════════════════════════════ */
+async function gerarCarrossel() {
+  const apiKey = getApiKey();
+  if(!apiKey) { showToast('Cole sua chave de API primeiro.', 'error'); return; }
+  const topic = document.getElementById('carouselTopic').value.trim();
+  if(!topic)  { showToast('Descreva o tema do carrossel.', 'error'); return; }
+
+  const palette = palettes[document.getElementById('paletteSelect').value] || palettes.pink;
+  const n = carouselSlideCount;
+
+  const btn = document.getElementById('genCarouselBtn');
+  btn.disabled = true;
+  document.getElementById('carouselBtnIcon').innerHTML = '<div class="spinner-sm"></div>';
+  document.getElementById('carouselBtnText').textContent = 'Criando slides…';
+
+  document.getElementById('carouselResults').innerHTML =
+    `<div class="empty-state"><div class="icon" style="animation:spin 1s linear infinite;display:inline-block">🎨</div><p style="margin-top:8px">A IA está escrevendo os slides…</p></div>`;
+
+  const systemPrompt = `Você é um designer de conteúdo para Instagram. Crie ${n} slides de carrossel para o tema abaixo.
+Retorne SOMENTE um array JSON com ${n} objetos, sem markdown, sem explicações, sem blocos de código, apenas o JSON puro.
+Cada objeto deve ter:
+- "slide": número do slide (1 a ${n})
+- "type": "cover" para o primeiro, "content" para os do meio, "cta" para o último
+- "headline": título curto do slide (máx 6 palavras, impactante)
+- "body": texto do slide (1-3 linhas, máx 60 chars cada linha, direto ao ponto)
+- "emoji": 1 emoji temático para decorar
+- "tip": dica visual curta para usar na imagem (máx 8 palavras)`;
+
+  try {
+    const resp = await fetch('/.netlify/functions/proxy', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': apiKey,
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages:[{ role:'user', content: topic }]
+      })
+    });
+
+    if(!resp.ok) {
+      const err = await resp.json().catch(()=>({}));
+      throw new Error(err.error?.message || `Erro ${resp.status}`);
+    }
+
+    const data   = await resp.json();
+    const rawTxt = (data.content||[]).map(c=>c.text||'').join('').trim();
+    // limpar possíveis marcações markdown que o modelo insira mesmo pedindo puro
+    const clean  = rawTxt.replace(/```json|```/g,'').trim();
+    const slides = JSON.parse(clean);
+    renderCarrouselSlides(slides, palette, topic);
+
+  } catch(e) {
+    document.getElementById('carouselResults').innerHTML =
+      `<div class="section" style="padding-top:1rem"><div class="error-card"><strong>Erro:</strong> ${e.message}</div></div>`;
+  }
+
+  btn.disabled = false;
+  document.getElementById('carouselBtnIcon').textContent = '🎨';
+  document.getElementById('carouselBtnText').textContent = 'Criar slides';
+}
+
+/* ══════════════════════════════════════════════════
+   RENDERIZAR SLIDES como SVG inline
+══════════════════════════════════════════════════ */
+function renderCarrouselSlides(slides, pal, topic) {
+  const W = 1080, H = 1080;
+  let html = `<div style="padding:0 1rem 1rem">
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;padding-top:4px">
+      ${slides.length} slides gerados · toque em <strong>Baixar</strong> para salvar cada um
+    </div>`;
+
+  slides.forEach((s, idx) => {
+    const svgContent = buildSlideSVG(s, pal, W, H);
+    const svgStr = new XMLSerializer ? new XMLSerializer().serializeToString(svgContent) : svgContent.outerHTML;
+    const b64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgStr)));
+    html += `<div class="carousel-slide-item" style="border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px">
+      <div id="slide-svg-${idx}" style="width:100%;aspect-ratio:1/1;overflow:hidden"></div>
+      <div class="carousel-slide-caption">
+        <span>Slide ${idx+1} — ${s.type === 'cover' ? 'Capa' : s.type === 'cta' ? 'CTA' : 'Conteúdo'}</span>
+        <button class="dl-btn" onclick="downloadSlide(${idx})">⬇ Baixar</button>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  document.getElementById('carouselResults').innerHTML = html;
+
+  // inserir SVGs
+  slides.forEach((s, idx) => {
+    const svg = buildSlideSVG(s, pal, W, H);
+    const container = document.getElementById('slide-svg-'+idx);
+    if(container) {
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+      container.appendChild(svg);
+    }
+  });
+
+  // guardar para download
+  window._carouselSlides = slides;
+  window._carouselPalette = pal;
+}
+
+/* ══════════════════════════════════════════════════
+   CONSTRUIR SVG DE UM SLIDE
+══════════════════════════════════════════════════ */
+function buildSlideSVG(slide, pal, W, H) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns,'svg');
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.setAttribute('xmlns', ns);
+  svg.setAttribute('width', W);
+  svg.setAttribute('height', H);
+
+  const isCover = slide.type === 'cover';
+  const isCTA   = slide.type === 'cta';
+
+  // ── FUNDO ──
+  if(isCover) {
+    // gradiente diagonal
+    const defs = document.createElementNS(ns,'defs');
+    const grad = document.createElementNS(ns,'linearGradient');
+    grad.setAttribute('id','bg-grad');
+    grad.setAttribute('x1','0%'); grad.setAttribute('y1','0%');
+    grad.setAttribute('x2','100%'); grad.setAttribute('y2','100%');
+    const s1 = document.createElementNS(ns,'stop');
+    s1.setAttribute('offset','0%'); s1.setAttribute('stop-color', pal.bg);
+    const s2 = document.createElementNS(ns,'stop');
+    s2.setAttribute('offset','100%'); s2.setAttribute('stop-color', darkenHex(pal.bg, 30));
+    grad.appendChild(s1); grad.appendChild(s2);
+    defs.appendChild(grad);
+    svg.appendChild(defs);
+    rect(svg, ns, 0, 0, W, H, 'url(#bg-grad)');
+  } else if(isCTA) {
+    rect(svg, ns, 0, 0, W, H, pal.dark);
+  } else {
+    rect(svg, ns, 0, 0, W, H, pal.light);
+  }
+
+  // ── ELEMENTOS DECORATIVOS ──
+  if(isCover) {
+    // círculo grande desfocado canto superior direito
+    circle(svg, ns, W*0.85, H*0.15, 240, 'rgba(255,255,255,0.08)');
+    circle(svg, ns, W*0.15, H*0.85, 180, 'rgba(255,255,255,0.06)');
+    // linha diagonal sutil
+    line(svg, ns, 0, H*0.7, W*0.3, H, 'rgba(255,255,255,0.12)', 2);
+    line(svg, ns, W*0.7, 0, W, H*0.3, 'rgba(255,255,255,0.12)', 2);
+  } else if(isCTA) {
+    circle(svg, ns, W*0.9, H*0.1, 200, 'rgba(255,255,255,0.04)');
+    circle(svg, ns, W*0.1, H*0.9, 150, 'rgba(255,255,255,0.04)');
+  } else {
+    // barra lateral colorida
+    rect(svg, ns, 0, 0, 12, H, pal.bg);
+    // bloco de destaque para headline
+    rect(svg, ns, 60, 140, W-120, 8, pal.bg, 4);
+  }
+
+  // ── NÚMERO DO SLIDE (conteúdo) ──
+  if(!isCover && !isCTA) {
+    const numCircle = circle(svg, ns, W-90, 90, 48, pal.bg);
+    svgText(svg, ns, String(slide.slide), W-90, 90+14, '52px', '700', pal.text, 'middle');
+  }
+
+  // ── CONTEÚDO DE TEXTO ──
+  if(isCover) {
+    // emoji grande
+    svgText(svg, ns, slide.emoji, W/2, H*0.32, '140px', '400', pal.text, 'middle');
+    // headline
+    const lines = wrapText(slide.headline.toUpperCase(), 16);
+    let y = H*0.52;
+    lines.forEach(l => {
+      svgText(svg, ns, l, W/2, y, '72px', '800', pal.text, 'middle');
+      y += 82;
+    });
+    // body
+    const bodyLines = (slide.body||'').split('\n').slice(0,3);
+    let by = y + 30;
+    bodyLines.forEach(l => {
+      svgText(svg, ns, l, W/2, by, '36px', '400', 'rgba(255,255,255,0.85)', 'middle');
+      by += 48;
+    });
+    // slide 1 de N badge
+    rect(svg, ns, W/2-60, H-120, 120, 44, 'rgba(255,255,255,0.2)', 22);
+    svgText(svg, ns, `Slide ${slide.slide}`, W/2, H-90, '26px', '600', pal.text, 'middle');
+
+  } else if(isCTA) {
+    svgText(svg, ns, slide.emoji, W/2, H*0.3, '120px', '400', pal.text, 'middle');
+    const lines = wrapText(slide.headline.toUpperCase(), 14);
+    let y = H*0.48;
+    lines.forEach(l => {
+      svgText(svg, ns, l, W/2, y, '68px', '800', pal.text, 'middle');
+      y += 78;
+    });
+    const bodyLines = (slide.body||'').split('\n').slice(0,3);
+    let by = y + 20;
+    bodyLines.forEach(l => {
+      svgText(svg, ns, l, W/2, by, '34px', '400', 'rgba(255,255,255,0.8)', 'middle');
+      by += 48;
+    });
+    // botão CTA visual
+    rect(svg, ns, W/2-160, H-160, 320, 72, pal.bg, 36);
+    svgText(svg, ns, '👆 Salvar este post', W/2, H-118, '30px', '700', pal.dark, 'middle');
+
+  } else {
+    // slide de conteúdo
+    svgText(svg, ns, slide.emoji, 90, 100, '72px', '400', pal.bg, 'start');
+    // headline
+    const hlLines = wrapText(slide.headline, 18);
+    let hy = 200;
+    hlLines.forEach(l => {
+      svgText(svg, ns, l, 80, hy, '64px', '800', pal.dark, 'start');
+      hy += 74;
+    });
+    // separador
+    rect(svg, ns, 80, hy+10, 120, 6, pal.bg, 3);
+    // body
+    const bodyLines = (slide.body||'').split('\n').slice(0,4);
+    let by = hy + 70;
+    bodyLines.forEach(l => {
+      const wrapped = wrapText(l, 26);
+      wrapped.forEach(wl => {
+        svgText(svg, ns, wl, 80, by, '38px', '400', '#2a2a2a', 'start');
+        by += 52;
+      });
+    });
+    // tip box
+    if(slide.tip) {
+      rect(svg, ns, 60, H-170, W-120, 90, pal.accent, 16);
+      svgText(svg, ns, '💡 ' + slide.tip, W/2, H-115, '32px', '600', pal.dark, 'middle');
+    }
+  }
+
+  return svg;
+}
+
+/* ── helpers SVG ── */
+function rect(parent, ns, x, y, w, h, fill, r=0) {
+  const el = document.createElementNS(ns,'rect');
+  el.setAttribute('x',x); el.setAttribute('y',y);
+  el.setAttribute('width',w); el.setAttribute('height',h);
+  el.setAttribute('fill',fill);
+  if(r) el.setAttribute('rx',r);
+  parent.appendChild(el);
+  return el;
+}
+function circle(parent, ns, cx, cy, r, fill) {
+  const el = document.createElementNS(ns,'circle');
+  el.setAttribute('cx',cx); el.setAttribute('cy',cy); el.setAttribute('r',r);
+  el.setAttribute('fill',fill);
+  parent.appendChild(el);
+  return el;
+}
+function line(parent, ns, x1, y1, x2, y2, stroke, sw) {
+  const el = document.createElementNS(ns,'line');
+  el.setAttribute('x1',x1); el.setAttribute('y1',y1);
+  el.setAttribute('x2',x2); el.setAttribute('y2',y2);
+  el.setAttribute('stroke',stroke);
+  el.setAttribute('stroke-width',sw);
+  parent.appendChild(el);
+}
+function svgText(parent, ns, content, x, y, fontSize, fontWeight, fill, anchor='start') {
+  const el = document.createElementNS(ns,'text');
+  el.setAttribute('x',x); el.setAttribute('y',y);
+  el.setAttribute('font-size',fontSize);
+  el.setAttribute('font-weight',fontWeight);
+  el.setAttribute('fill',fill);
+  el.setAttribute('text-anchor',anchor);
+  el.setAttribute('font-family','-apple-system,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif');
+  el.textContent = content;
+  parent.appendChild(el);
+  return el;
+}
+function wrapText(text, maxChars) {
+  if(!text) return [''];
+  const words = text.split(' ');
+  const lines = [];
+  let current = '';
+  for(const w of words) {
+    if((current + ' ' + w).trim().length <= maxChars) {
+      current = (current + ' ' + w).trim();
+    } else {
+      if(current) lines.push(current);
+      current = w;
+    }
+  }
+  if(current) lines.push(current);
+  return lines.length ? lines : [text];
+}
+function darkenHex(hex, amount) {
+  const num = parseInt(hex.replace('#',''),16);
+  const r = Math.max(0,(num>>16)-amount);
+  const g = Math.max(0,((num>>8)&0xff)-amount);
+  const b = Math.max(0,(num&0xff)-amount);
+  return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+
+/* ══════════════════════════════════════════════════
+   DOWNLOAD SLIDE
+══════════════════════════════════════════════════ */
+function downloadSlide(idx) {
+  const slides  = window._carouselSlides;
+  const palette = window._carouselPalette;
+  if(!slides) return;
+  const svg = buildSlideSVG(slides[idx], palette, 1080, 1080);
+  const serializer = new XMLSerializer();
+  const svgStr = serializer.serializeToString(svg);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080; canvas.height = 1080;
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  const blob = new Blob([svgStr], {type:'image/svg+xml'});
+  const url  = URL.createObjectURL(blob);
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, 1080, 1080);
+    URL.revokeObjectURL(url);
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = `slide-${idx+1}.png`;
+    a.click();
+  };
+  img.src = url;
+}
+
+/* ══════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════ */
+loadKey();
+initDay();
+renderHistory();
+</script>
+</body>
+</html>
