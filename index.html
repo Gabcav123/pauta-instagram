@@ -870,7 +870,7 @@ ${extras ? 'Observações: ' + extras : ''}
 Para cada formato, use o título como cabeçalho (### NomeDoFormato) e escreva o conteúdo completo e específico logo abaixo. Seja criativo e use linguagem brasileira natural. Conteúdo pronto para usar, sem introduções genéricas.`;
 
   try {
-    const resp = await fetch('/.netlify/functions/proxy', {
+    const resp = await fetch('https://pauta-instagram.gabriellicavalcantearaujo.workers.dev', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1032,7 +1032,7 @@ Cada objeto deve ter:
 - "tip": dica visual curta para usar na imagem (máx 8 palavras)`;
 
   try {
-    const resp = await fetch('/.netlify/functions/proxy', {
+    const resp = await fetch('https://pauta-instagram.gabriellicavalcantearaujo.workers.dev', {
       method:'POST',
       headers:{
         'Content-Type':'application/json',
