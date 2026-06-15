@@ -21,8 +21,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .top-bar-icon{width:38px;height:38px;background:var(--pink-light);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .top-bar h1{font-size:16px;font-weight:700}
 .top-bar p{font-size:12px;color:var(--text-muted);margin-top:1px}
-.tabs{display:flex;background:var(--white);border-bottom:1px solid var(--border);padding:0 1rem;position:sticky;top:67px;z-index:19}
-.tab-btn{flex:1;padding:11px 0;font-size:13px;font-weight:600;color:var(--text-muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px}
+.tabs{display:flex;background:var(--white);border-bottom:1px solid var(--border);padding:0 .5rem;position:sticky;top:67px;z-index:19;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex:0 0 auto;padding:11px 14px;font-size:13px;font-weight:600;color:var(--text-muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
 .tab-btn.active{color:var(--pink);border-bottom-color:var(--pink)}
 .panel{display:none}.panel.active{display:block}
 .section{padding:1rem 1rem 0}
@@ -50,11 +51,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .result-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px;margin-bottom:10px}
 .result-body{font-size:14px;color:var(--text);line-height:1.75;white-space:pre-wrap}
 .result-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.copy-btn,.carousel-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .15s;min-height:36px}
+.copy-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .15s;min-height:36px}
 .copy-btn:hover{background:var(--gray-bg)}
 .copy-btn.copied{color:#0F6E56;border-color:#1D9E75;background:var(--teal-light)}
-.carousel-btn{background:var(--purple-light);border-color:#b8b3f8;color:var(--purple-dark)}
-.carousel-btn:hover{background:#e0deff}
 .spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.35);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 .spinner-sm{width:14px;height:14px;border:2px solid rgba(60,52,137,.3);border-top-color:var(--purple-dark);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -85,13 +84,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .modal-actions{display:flex;gap:10px}
 .modal-cancel{flex:1;padding:13px;background:var(--gray-bg);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;color:var(--text-muted);cursor:pointer}
 .modal-confirm{flex:1;padding:13px;background:#FEF2F2;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;color:#991B1B;cursor:pointer}
-.num-btn{flex:1;padding:9px 0;border:1.5px solid var(--border);border-radius:8px;background:transparent;font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .15s}
-.num-btn.active{background:var(--purple-light);border-color:#b8b3f8;color:var(--purple-dark)}
-.gen-carousel-btn{width:100%;padding:13px;background:var(--purple-dark);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s}
-.gen-carousel-btn:disabled{opacity:.5}
-.dl-btn{padding:7px 13px;background:var(--pink-light);border:none;border-radius:8px;font-size:12px;font-weight:700;color:var(--pink-dark);cursor:pointer;display:flex;align-items:center;gap:5px}
-.carousel-slide-caption{padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
-.carousel-slide-caption span{font-size:12px;color:var(--text-muted);font-weight:600}
+.gen-action-btn{width:100%;padding:13px;background:var(--purple-dark);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s}
+.gen-action-btn:disabled{opacity:.5}
+
+/* ── EXEMPLOS ─────────────────────────────────────── */
+.ex-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:10px}
+.ex-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ex-categoria{font-size:11px;font-weight:700;color:var(--purple-dark);background:var(--purple-light);padding:3px 10px;border-radius:10px;display:inline-block}
+.ex-icon-btn{width:32px;height:32px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-muted);transition:all .15s}
+.ex-icon-btn:hover{background:var(--gray-bg)}
+.ex-texto{font-size:13px;color:var(--text);line-height:1.65;white-space:pre-wrap}
+.ex-nota{font-size:12px;color:var(--text-muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.ex-origem-img{font-size:11px;color:var(--blue-dark);background:var(--blue-light);padding:3px 10px;border-radius:10px;display:inline-block;margin-left:6px}
+
+/* ── TOGGLE TEXTO/IMAGEM ──────────────────────────── */
+.ex-mode-toggle{display:flex;gap:8px;margin-bottom:14px}
+.ex-mode-btn{flex:1;padding:9px 0;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .15s}
+.ex-mode-btn.active{background:var(--pink-light);border-color:var(--pink);color:var(--pink-dark)}
+
+/* ── UPLOAD DE IMAGEM ─────────────────────────────── */
+.img-upload-box{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;min-height:140px;border:1.5px dashed var(--border);border-radius:var(--radius-sm);background:var(--gray-bg);cursor:pointer;transition:all .15s;padding:1rem;text-align:center}
+.img-upload-box:hover{border-color:var(--pink)}
+.img-upload-box.has-image{border-style:solid;padding:0;overflow:hidden;min-height:auto}
+#imgUploadIcon{font-size:32px}
+#imgUploadText{font-size:13px;color:var(--text-muted);font-weight:500}
+.img-preview{width:100%;max-height:280px;object-fit:contain;display:block;background:#000}
+
+/* ── TENDÊNCIAS ───────────────────────────────────── */
+.trend-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem;margin-bottom:10px;animation:fadeUp .3s ease}
+.trend-content{font-size:14px;color:var(--text);line-height:1.8;white-space:pre-wrap}
+.trend-content h3,.trend-content strong{color:var(--pink-dark)}
+.trend-date{font-size:12px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.gen-trend-btn{width:100%;padding:13px;background:var(--amber-dark);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;margin-bottom:14px}
+.gen-trend-btn:disabled{opacity:.5}
+.trend-history-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;padding-left:2px}
 </style>
 </head>
 <body>
@@ -102,7 +128,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('pauta',this)">✨ Pauta</button>
-    <button class="tab-btn" onclick="switchTab('carrossel',this)">🖼 Carrosséis</button>
+    <button class="tab-btn" onclick="switchTab('tendencias',this)">🔥 Tendências</button>
+    <button class="tab-btn" onclick="switchTab('exemplos',this)">⭐ Exemplos</button>
     <button class="tab-btn" onclick="switchTab('historico',this)">📁 Histórico</button>
   </div>
 
@@ -156,42 +183,93 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div style="height:8px"></div>
   </div>
 
-  <!-- ABA CARROSSÉIS -->
-  <div class="panel" id="carrosselPanel">
+  <!-- ABA TENDÊNCIAS -->
+  <div class="panel" id="tendenciasPanel">
+    <div class="section" style="padding-top:1rem">
+      <button class="gen-trend-btn" id="genTrendBtn" onclick="gerarTendencias()">
+        <span id="trendBtnIcon">🔥</span>
+        <span id="trendBtnText">Gerar relatório de hoje</span>
+      </button>
+      <div id="trendResults">
+        <div class="empty-state" style="padding:2rem 1rem">
+          <div class="icon">📊</div>
+          <p>Toque em <strong>Gerar relatório de hoje</strong> para ver o que está em alta no seu nicho agora.</p>
+        </div>
+      </div>
+      <div id="trendHistory"></div>
+    </div>
+    <div style="height:8px"></div>
+  </div>
+
+  <!-- ABA EXEMPLOS -->
+  <div class="panel" id="exemplosPanel">
     <div class="section" style="padding-top:1rem">
       <div class="card">
-        <div class="card-title">🖼 Gerar carrossel</div>
-        <div class="field">
-          <label>Tema ou conteúdo do carrossel</label>
-          <textarea id="carouselTopic" rows="3" placeholder="Ex: 5 dicas de skincare matinal, rotina de beleza rápida…"></textarea>
+        <div class="card-title">⭐ Adicionar exemplo</div>
+        <p style="font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:12px">
+          Cole legendas/roteiros que já performaram bem, ou envie um print de post/Stories/legenda. A IA usa esses exemplos como referência de estilo nas próximas pautas.
+        </p>
+
+        <div class="ex-mode-toggle">
+          <button class="ex-mode-btn active" id="modeTextoBtn" onclick="setExMode('texto')">✍️ Texto</button>
+          <button class="ex-mode-btn" id="modeImagemBtn" onclick="setExMode('imagem')">🖼️ Imagem</button>
         </div>
-        <div class="field">
-          <label>Número de slides</label>
-          <div style="display:flex;gap:8px" id="numBtns">
-            <button class="num-btn" onclick="setNum(this,3)">3</button>
-            <button class="num-btn active" onclick="setNum(this,4)">4</button>
-            <button class="num-btn" onclick="setNum(this,5)">5</button>
-            <button class="num-btn" onclick="setNum(this,6)">6</button>
+
+        <!-- MODO TEXTO -->
+        <div id="exModoTexto">
+          <div class="field">
+            <label>Categoria</label>
+            <select id="exCategoria">
+              <option value="Legenda">Legenda</option>
+              <option value="Roteiro de Reels">Roteiro de Reels</option>
+              <option value="Hook">Hook</option>
+              <option value="Stories">Stories</option>
+              <option value="CTA">CTA</option>
+            </select>
           </div>
+          <div class="field">
+            <label>Texto do exemplo</label>
+            <textarea id="exTexto" rows="4" placeholder="Cole aqui a legenda, roteiro ou hook que performou bem…"></textarea>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Nota (opcional)</label>
+            <input type="text" id="exNota" placeholder="Ex: 50k views, melhor Reels do mês…">
+          </div>
+          <button class="gen-action-btn" style="margin-top:10px;background:var(--pink)" id="addExBtn" onclick="adicionarExemplo()">
+            <span id="addExIcon">➕</span>
+            <span id="addExText">Adicionar exemplo</span>
+          </button>
         </div>
-        <div class="field">
-          <label>Paleta de cores</label>
-          <select id="paletteSelect">
-            <option value="pink">Rosa — identidade do perfil</option>
-            <option value="warm">Terracota quente</option>
-            <option value="sage">Verde sage suave</option>
-            <option value="midnight">Azul meia-noite</option>
-            <option value="cream">Creme neutro elegante</option>
-          </select>
+
+        <!-- MODO IMAGEM -->
+        <div id="exModoImagem" style="display:none">
+          <div class="field">
+            <label>Print do post, Stories ou legenda</label>
+            <label class="img-upload-box" id="imgUploadBox" for="exImagemInput">
+              <span id="imgUploadIcon">📷</span>
+              <span id="imgUploadText">Toque para escolher uma imagem</span>
+              <input type="file" id="exImagemInput" accept="image/*" style="display:none" onchange="onImagemSelecionada(event)">
+            </label>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Nota (opcional)</label>
+            <input type="text" id="exImgNota" placeholder="Ex: 50k views, melhor Reels do mês…">
+          </div>
+          <button class="gen-action-btn" style="margin-top:10px;background:var(--pink)" id="addExImgBtn" onclick="adicionarExemploImagem()" disabled>
+            <span id="addExImgIcon">➕</span>
+            <span id="addExImgText">Analisar e adicionar</span>
+          </button>
         </div>
-        <button class="gen-carousel-btn" id="genCarouselBtn" onclick="gerarCarrossel()">
-          <span id="carouselBtnIcon">🎨</span>
-          <span id="carouselBtnText">Criar slides</span>
-        </button>
+
       </div>
     </div>
-    <div id="carouselResults">
-      <div class="empty-state"><div class="icon">🖼</div><p>Seus slides aparecerão aqui.</p></div>
+    <div class="section">
+      <div id="exemplosList">
+        <div class="empty-state" style="padding:2rem 1rem">
+          <div class="icon">⭐</div>
+          <p>Nenhum exemplo cadastrado ainda.</p>
+        </div>
+      </div>
     </div>
     <div style="height:8px"></div>
   </div>
@@ -229,14 +307,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const SERVER = 'https://pauta-server.onrender.com';
-let selectedDay='',historyData=JSON.parse(localStorage.getItem('pauta_history')||'[]'),carouselSlideCount=4,lastGeneratedSections=[],lastGeneratedDay='';
+let selectedDay='',historyData=JSON.parse(localStorage.getItem('pauta_history')||'[]'),lastGeneratedSections=[],lastGeneratedDay='';
 
 function switchTab(tab,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(tab==='pauta'?'pautaPanel':tab==='carrossel'?'carrosselPanel':'historicoPanel').classList.add('active');
+  const panelMap={pauta:'pautaPanel',tendencias:'tendenciasPanel',exemplos:'exemplosPanel',historico:'historicoPanel'};
+  document.getElementById(panelMap[tab]).classList.add('active');
   btn.classList.add('active');
   document.getElementById('stickyGen').style.display=tab==='pauta'?'block':'none';
+  if(tab==='exemplos') loadExemplos();
+  if(tab==='tendencias') loadTrendHistory();
 }
 
 function initDay(){
@@ -278,7 +359,7 @@ function renderResults(sections,dia){
   sections.forEach((s,i)=>{
     const key=Object.keys(badgeColors).find(k=>s.title.toLowerCase().includes(k.toLowerCase()))||'Legenda';
     const c=badgeColors[key]||{bg:'#F1EFE8',color:'#444'};const ic=badgeIcons[key]||'📝';
-    html+=`<div class="result-card"><div class="result-badge" style="background:${c.bg};color:${c.color}">${ic} ${s.title}</div><div class="result-body" id="rb${i}">${s.body}</div><div class="result-actions"><button class="copy-btn" id="cb${i}" onclick="copyBlock(${i})">📋 Copiar</button>${key==='Carrossel'?`<button class="carousel-btn" onclick="openCarouselFromPauta(${i})">🎨 Criar slides</button>`:''}</div></div>`;
+    html+=`<div class="result-card"><div class="result-badge" style="background:${c.bg};color:${c.color}">${ic} ${s.title}</div><div class="result-body" id="rb${i}">${s.body}</div><div class="result-actions"><button class="copy-btn" id="cb${i}" onclick="copyBlock(${i})">📋 Copiar</button></div></div>`;
   });
   document.getElementById('results').innerHTML=html;
   window.scrollTo({top:document.getElementById('results').offsetTop-130,behavior:'smooth'});
@@ -305,7 +386,21 @@ async function gerar(){
   document.getElementById('btnIcon').innerHTML='<div class="spinner"></div>';
   document.getElementById('btnText').textContent='Gerando…';
   showSkeleton(formatos.length);
-  const prompt=`Você é estrategista de conteúdo para Instagram. Perfil: moda, beleza, maternidade e lifestyle, 50k+ seguidores.\nGere uma pauta completa para ${dia}${foco?', foco em: '+foco:''}.\nTom: ${tom}.\nFormatos: ${formatos.join(', ')}.\n${extras?'Observações: '+extras:''}\nPara cada formato, use o título como cabeçalho (### NomeDoFormato) e escreva o conteúdo completo logo abaixo. Seja criativo e use linguagem brasileira natural.`;
+
+  // buscar exemplos cadastrados para enriquecer o prompt
+  let contextoRefs='';
+  try{
+    const exResp=await fetch(SERVER+'/exemplos');
+    if(exResp.ok){
+      const exemplos=await exResp.json();
+      if(exemplos.length){
+        contextoRefs='\n\nExemplos de conteúdo que já performaram bem para o usuário (use como referência de tom, estrutura e estilo — não copie literalmente):\n'+
+          exemplos.slice(0,8).map(e=>`[${e.categoria}]${e.nota?' ('+e.nota+')':''}: ${e.texto.slice(0,250)}`).join('\n');
+      }
+    }
+  }catch(e){/* segue sem exemplos se falhar */}
+
+  const prompt=`Você é estrategista de conteúdo para Instagram. Perfil: moda, beleza, maternidade e lifestyle, 50k+ seguidores.\nGere uma pauta completa para ${dia}${foco?', foco em: '+foco:''}.\nTom: ${tom}.\nFormatos: ${formatos.join(', ')}.\n${extras?'Observações: '+extras:''}${contextoRefs}\n\nUse a busca na web para embasar o conteúdo com informações atuais e específicas: cite marcas e produtos reais (ex: nome da marca/linha de skincare, peça de roupa de uma loja específica), e quando o formato envolver Reels ou Stories, sugira um áudio/música específico que esteja em alta agora (nome da faixa e artista) e como aplicá-lo. Evite referências genéricas como "marca X" ou "música popular" — sempre nomeie.\n\nPara cada formato, use o título como cabeçalho (### NomeDoFormato) e escreva o conteúdo completo logo abaixo. Seja criativo e use linguagem brasileira natural.`;
   try{
     const resp=await fetch(SERVER+'/gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1800,messages:[{role:'user',content:prompt}]})});
     if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err.error?.message||`Erro ${resp.status}`);}
@@ -343,91 +438,206 @@ function showToast(msg,type='info'){
   t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
 }
 
-function setNum(btn,n){carouselSlideCount=n;document.querySelectorAll('.num-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+// ══════════════════════════════════════════════════
+// EXEMPLOS
+// ══════════════════════════════════════════════════
+const categoriaIcons={'Legenda':'✍️','Roteiro de Reels':'🎬','Hook':'🪝','Stories':'📱','CTA':'💬','Print analisado':'🖼️'};
 
-const palettes={pink:{bg:'#D4537E',text:'#FFFFFF',accent:'#FBEAF0',dark:'#72243E',light:'#FCF0F5'},warm:{bg:'#C4583C',text:'#FFFFFF',accent:'#FAEADA',dark:'#6B2716',light:'#FDF3EE'},sage:{bg:'#5A8A6A',text:'#FFFFFF',accent:'#E2F0E7',dark:'#1E4D2F',light:'#F0F8F2'},midnight:{bg:'#1E3A5F',text:'#FFFFFF',accent:'#D6E4F5',dark:'#0A1F36',light:'#EEF4FC'},cream:{bg:'#3D3530',text:'#FFFFFF',accent:'#F5EFEA',dark:'#1A1210',light:'#FBF8F5'}};
-
-function openCarouselFromPauta(idx){
-  const s=lastGeneratedSections[idx];if(!s)return;
-  document.getElementById('carouselTopic').value=s.body.slice(0,400);
-  switchTab('carrossel',document.querySelectorAll('.tab-btn')[1]);window.scrollTo({top:0,behavior:'smooth'});
-}
-
-async function gerarCarrossel(){
-  const topic=document.getElementById('carouselTopic').value.trim();
-  if(!topic){showToast('Descreva o tema do carrossel.','error');return;}
-  const palette=palettes[document.getElementById('paletteSelect').value]||palettes.pink;
-  const n=carouselSlideCount;
-  const btn=document.getElementById('genCarouselBtn');btn.disabled=true;
-  document.getElementById('carouselBtnIcon').innerHTML='<div class="spinner-sm"></div>';
-  document.getElementById('carouselBtnText').textContent='Criando slides…';
-  document.getElementById('carouselResults').innerHTML='<div class="empty-state"><div class="icon">🎨</div><p>Gerando slides…</p></div>';
-  const systemPrompt=`Crie ${n} slides de carrossel para Instagram. Retorne SOMENTE um array JSON com ${n} objetos, sem markdown. Cada objeto: "slide"(número),"type"("cover","content","cta"),"headline"(máx 6 palavras),"body"(1-3 linhas),"emoji"(1 emoji),"tip"(dica visual máx 8 palavras).`;
+async function loadExemplos(){
+  const el=document.getElementById('exemplosList');
   try{
-    const resp=await fetch(SERVER+'/gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:systemPrompt,messages:[{role:'user',content:topic}]})});
-    if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err.error?.message||`Erro ${resp.status}`);}
-    const data=await resp.json();const rawTxt=(data.content||[]).map(c=>c.text||'').join('').trim();
-    const slides=JSON.parse(rawTxt.replace(/```json|```/g,'').trim());
-    renderCarrouselSlides(slides,palette);
-  }catch(e){document.getElementById('carouselResults').innerHTML=`<div class="section" style="padding-top:1rem"><div class="error-card"><strong>Erro:</strong> ${e.message}</div></div>`;}
-  btn.disabled=false;document.getElementById('carouselBtnIcon').textContent='🎨';document.getElementById('carouselBtnText').textContent='Criar slides';
-}
-
-function renderCarrouselSlides(slides,pal){
-  const W=1080,H=1080;
-  let html=`<div style="padding:0 1rem 1rem"><div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;padding-top:4px">${slides.length} slides gerados</div>`;
-  slides.forEach((s,idx)=>{html+=`<div style="background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px"><div id="slide-svg-${idx}" style="width:100%;aspect-ratio:1/1;overflow:hidden"></div><div class="carousel-slide-caption"><span>Slide ${idx+1} — ${s.type==='cover'?'Capa':s.type==='cta'?'CTA':'Conteúdo'}</span><button class="dl-btn" onclick="downloadSlide(${idx})">⬇ Baixar</button></div></div>`;});
-  document.getElementById('carouselResults').innerHTML=html+'</div>';
-  slides.forEach((s,idx)=>{const svg=buildSlideSVG(s,pal,W,H);const c=document.getElementById('slide-svg-'+idx);if(c){svg.style.width='100%';svg.style.height='100%';c.appendChild(svg);}});
-  window._carouselSlides=slides;window._carouselPalette=pal;
-}
-
-function buildSlideSVG(slide,pal,W,H){
-  const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');
-  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('xmlns',ns);svg.setAttribute('width',W);svg.setAttribute('height',H);
-  const isCover=slide.type==='cover',isCTA=slide.type==='cta';
-  if(isCover){const defs=document.createElementNS(ns,'defs');const grad=document.createElementNS(ns,'linearGradient');grad.setAttribute('id','bg-grad');grad.setAttribute('x1','0%');grad.setAttribute('y1','0%');grad.setAttribute('x2','100%');grad.setAttribute('y2','100%');const s1=document.createElementNS(ns,'stop');s1.setAttribute('offset','0%');s1.setAttribute('stop-color',pal.bg);const s2=document.createElementNS(ns,'stop');s2.setAttribute('offset','100%');s2.setAttribute('stop-color',darkenHex(pal.bg,30));grad.appendChild(s1);grad.appendChild(s2);defs.appendChild(grad);svg.appendChild(defs);svgRect(svg,ns,0,0,W,H,'url(#bg-grad)');}
-  else if(isCTA){svgRect(svg,ns,0,0,W,H,pal.dark);}
-  else{svgRect(svg,ns,0,0,W,H,pal.light);svgRect(svg,ns,0,0,12,H,pal.bg);svgRect(svg,ns,60,140,W-120,8,pal.bg,4);}
-  if(isCover){svgCircle(svg,ns,W*.85,H*.15,240,'rgba(255,255,255,0.08)');svgCircle(svg,ns,W*.15,H*.85,180,'rgba(255,255,255,0.06)');}
-  if(!isCover&&!isCTA){svgCircle(svg,ns,W-90,90,48,pal.bg);svgText(svg,ns,String(slide.slide),W-90,104,'52px','700',pal.text,'middle');}
-  if(isCover){
-    svgText(svg,ns,slide.emoji,W/2,H*.32,'140px','400',pal.text,'middle');
-    let y=H*.52;wrapText(slide.headline.toUpperCase(),16).forEach(l=>{svgText(svg,ns,l,W/2,y,'72px','800',pal.text,'middle');y+=82;});
-    let by=y+30;(slide.body||'').split('\n').slice(0,3).forEach(l=>{svgText(svg,ns,l,W/2,by,'36px','400','rgba(255,255,255,0.85)','middle');by+=48;});
-    svgRect(svg,ns,W/2-60,H-120,120,44,'rgba(255,255,255,0.2)',22);svgText(svg,ns,`Slide ${slide.slide}`,W/2,H-90,'26px','600',pal.text,'middle');
-  }else if(isCTA){
-    svgText(svg,ns,slide.emoji,W/2,H*.3,'120px','400',pal.text,'middle');
-    let y=H*.48;wrapText(slide.headline.toUpperCase(),14).forEach(l=>{svgText(svg,ns,l,W/2,y,'68px','800',pal.text,'middle');y+=78;});
-    let by=y+20;(slide.body||'').split('\n').slice(0,3).forEach(l=>{svgText(svg,ns,l,W/2,by,'34px','400','rgba(255,255,255,0.8)','middle');by+=48;});
-    svgRect(svg,ns,W/2-160,H-160,320,72,pal.bg,36);svgText(svg,ns,'👆 Salvar este post',W/2,H-118,'30px','700',pal.dark,'middle');
-  }else{
-    svgText(svg,ns,slide.emoji,90,100,'72px','400',pal.bg,'start');
-    let hy=200;wrapText(slide.headline,18).forEach(l=>{svgText(svg,ns,l,80,hy,'64px','800',pal.dark,'start');hy+=74;});
-    svgRect(svg,ns,80,hy+10,120,6,pal.bg,3);
-    let by=hy+70;(slide.body||'').split('\n').slice(0,4).forEach(l=>{wrapText(l,26).forEach(wl=>{svgText(svg,ns,wl,80,by,'38px','400','#2a2a2a','start');by+=52;});});
-    if(slide.tip){svgRect(svg,ns,60,H-170,W-120,90,pal.accent,16);svgText(svg,ns,'💡 '+slide.tip,W/2,H-115,'32px','600',pal.dark,'middle');}
+    const resp=await fetch(SERVER+'/exemplos');
+    const exemplos=await resp.json();
+    if(!exemplos.length){
+      el.innerHTML='<div class="empty-state" style="padding:2rem 1rem"><div class="icon">⭐</div><p>Nenhum exemplo cadastrado ainda.</p></div>';
+      return;
+    }
+    el.innerHTML=exemplos.map(e=>renderExemploCard(e)).join('');
+  }catch(e){
+    el.innerHTML=`<div class="error-card"><strong>Erro ao carregar:</strong> ${e.message}</div>`;
   }
-  return svg;
 }
 
-function svgRect(p,ns,x,y,w,h,fill,r=0){const el=document.createElementNS(ns,'rect');el.setAttribute('x',x);el.setAttribute('y',y);el.setAttribute('width',w);el.setAttribute('height',h);el.setAttribute('fill',fill);if(r)el.setAttribute('rx',r);p.appendChild(el);return el;}
-function svgCircle(p,ns,cx,cy,r,fill){const el=document.createElementNS(ns,'circle');el.setAttribute('cx',cx);el.setAttribute('cy',cy);el.setAttribute('r',r);el.setAttribute('fill',fill);p.appendChild(el);return el;}
-function svgText(p,ns,content,x,y,fontSize,fontWeight,fill,anchor='start'){const el=document.createElementNS(ns,'text');el.setAttribute('x',x);el.setAttribute('y',y);el.setAttribute('font-size',fontSize);el.setAttribute('font-weight',fontWeight);el.setAttribute('fill',fill);el.setAttribute('text-anchor',anchor);el.setAttribute('font-family','-apple-system,BlinkMacSystemFont,Arial,sans-serif');el.textContent=content;p.appendChild(el);return el;}
-function wrapText(text,maxChars){if(!text)return[''];const words=text.split(' ');const lines=[];let cur='';for(const w of words){if((cur+' '+w).trim().length<=maxChars){cur=(cur+' '+w).trim();}else{if(cur)lines.push(cur);cur=w;}}if(cur)lines.push(cur);return lines.length?lines:[text];}
-function darkenHex(hex,amount){const num=parseInt(hex.replace('#',''),16);const r=Math.max(0,(num>>16)-amount);const g=Math.max(0,((num>>8)&0xff)-amount);const b=Math.max(0,(num&0xff)-amount);return'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');}
+function renderExemploCard(e){
+  const ic=categoriaIcons[e.categoria]||'⭐';
+  return `<div class="ex-card" id="ex-${e.id}">
+    <div class="ex-header">
+      <span class="ex-categoria">${ic} ${e.categoria}</span>${e.origem==='imagem'?'<span class="ex-origem-img">📷 de print</span>':''}
+      <button class="ex-icon-btn" onclick="removerExemplo(${e.id})" title="Remover" style="margin-left:auto">🗑️</button>
+    </div>
+    <div class="ex-texto">${e.texto}</div>
+    ${e.nota?`<div class="ex-nota">📈 ${e.nota}</div>`:''}
+  </div>`;
+}
 
-function downloadSlide(idx){
-  const slides=window._carouselSlides,palette=window._carouselPalette;if(!slides)return;
-  const svg=buildSlideSVG(slides[idx],palette,1080,1080);
-  const svgStr=new XMLSerializer().serializeToString(svg);
-  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1080;
-  const img=new Image();const blob=new Blob([svgStr],{type:'image/svg+xml'});const url=URL.createObjectURL(blob);
-  img.onload=()=>{canvas.getContext('2d').drawImage(img,0,0,1080,1080);URL.revokeObjectURL(url);const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download=`slide-${idx+1}.png`;a.click();};
-  img.src=url;
+async function adicionarExemplo(){
+  const categoria=document.getElementById('exCategoria').value;
+  const texto=document.getElementById('exTexto').value.trim();
+  const nota=document.getElementById('exNota').value.trim();
+  if(!texto){showToast('Cole o texto do exemplo.','error');return;}
+
+  const btn=document.getElementById('addExBtn');btn.disabled=true;
+  document.getElementById('addExIcon').innerHTML='<div class="spinner-sm"></div>';
+  document.getElementById('addExText').textContent='Adicionando…';
+
+  try{
+    const resp=await fetch(SERVER+'/exemplos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({categoria,texto,nota})});
+    if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err.error?.message||`Erro ${resp.status}`);}
+    document.getElementById('exTexto').value='';
+    document.getElementById('exNota').value='';
+    await loadExemplos();
+    showToast('Exemplo adicionado!');
+  }catch(e){showToast(e.message,'error');}
+
+  btn.disabled=false;document.getElementById('addExIcon').textContent='➕';document.getElementById('addExText').textContent='Adicionar exemplo';
+}
+
+async function removerExemplo(id){
+  try{
+    await fetch(SERVER+'/exemplos/'+id,{method:'DELETE'});
+    await loadExemplos();
+    showToast('Exemplo removido.');
+  }catch(e){showToast(e.message,'error');}
+}
+
+// ── TOGGLE TEXTO / IMAGEM ──
+function setExMode(mode){
+  const isTexto=mode==='texto';
+  document.getElementById('modeTextoBtn').classList.toggle('active',isTexto);
+  document.getElementById('modeImagemBtn').classList.toggle('active',!isTexto);
+  document.getElementById('exModoTexto').style.display=isTexto?'block':'none';
+  document.getElementById('exModoImagem').style.display=isTexto?'none':'block';
+}
+
+// ── UPLOAD DE IMAGEM ──
+let imagemSelecionadaBase64=null;
+let imagemSelecionadaTipo=null;
+
+function onImagemSelecionada(event){
+  const file=event.target.files[0];
+  if(!file)return;
+
+  if(file.size>8*1024*1024){
+    showToast('Imagem muito grande (máx 8MB).','error');
+    event.target.value='';
+    return;
+  }
+
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const result=reader.result; // data:image/jpeg;base64,XXXX
+    const [meta,base64]=result.split(',');
+    imagemSelecionadaBase64=base64;
+    imagemSelecionadaTipo=file.type||'image/jpeg';
+
+    const box=document.getElementById('imgUploadBox');
+    box.classList.add('has-image');
+    box.innerHTML=`<img class="img-preview" src="${result}" alt="preview">`;
+    // recria o input já que innerHTML foi sobrescrito
+    const newInput=document.createElement('input');
+    newInput.type='file';newInput.id='exImagemInput';newInput.accept='image/*';
+    newInput.style.display='none';newInput.onchange=onImagemSelecionada;
+    box.appendChild(newInput);
+
+    document.getElementById('addExImgBtn').disabled=false;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function adicionarExemploImagem(){
+  if(!imagemSelecionadaBase64){showToast('Escolha uma imagem primeiro.','error');return;}
+  const nota=document.getElementById('exImgNota').value.trim();
+
+  const btn=document.getElementById('addExImgBtn');btn.disabled=true;
+  document.getElementById('addExImgIcon').innerHTML='<div class="spinner-sm"></div>';
+  document.getElementById('addExImgText').textContent='Analisando imagem…';
+
+  try{
+    const resp=await fetch(SERVER+'/exemplos/imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imagem:imagemSelecionadaBase64,mediaType:imagemSelecionadaTipo,nota})});
+    if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err.error?.message||`Erro ${resp.status}`);}
+
+    // reset do form
+    imagemSelecionadaBase64=null;imagemSelecionadaTipo=null;
+    document.getElementById('exImgNota').value='';
+    const box=document.getElementById('imgUploadBox');
+    box.classList.remove('has-image');
+    box.innerHTML=`<span id="imgUploadIcon">📷</span><span id="imgUploadText">Toque para escolher uma imagem</span>
+      <input type="file" id="exImagemInput" accept="image/*" style="display:none" onchange="onImagemSelecionada(event)">`;
+
+    await loadExemplos();
+    showToast('Imagem analisada e adicionada!');
+  }catch(e){showToast(e.message,'error');}
+
+  btn.disabled=true; // só reabilita quando escolher nova imagem
+  document.getElementById('addExImgIcon').textContent='➕';
+  document.getElementById('addExImgText').textContent='Analisar e adicionar';
+}
+
+// ══════════════════════════════════════════════════
+// TENDÊNCIAS
+// ══════════════════════════════════════════════════
+async function gerarTendencias(){
+  const btn=document.getElementById('genTrendBtn');btn.disabled=true;
+  document.getElementById('trendBtnIcon').innerHTML='<div class="spinner"></div>';
+  document.getElementById('trendBtnText').textContent='Buscando tendências…';
+  document.getElementById('trendResults').innerHTML='<div class="empty-state" style="padding:2rem 1rem"><div class="icon">🔍</div><p>Pesquisando o que está em alta no seu nicho…</p></div>';
+
+  try{
+    const resp=await fetch(SERVER+'/relatorio/gerar',{method:'POST'});
+    if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err.error?.message||`Erro ${resp.status}`);}
+    const rel=await resp.json();
+    renderTrendCard(rel,true);
+    await loadTrendHistory();
+  }catch(e){
+    document.getElementById('trendResults').innerHTML=`<div class="error-card"><strong>Erro:</strong> ${e.message}</div>`;
+  }
+  btn.disabled=false;document.getElementById('trendBtnIcon').textContent='🔥';document.getElementById('trendBtnText').textContent='Gerar relatório de hoje';
+}
+
+function renderTrendCard(rel,isNew){
+  const dataFmt=new Date(rel.criado_em||Date.now()).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  const html=`<div class="trend-card">
+    <div class="trend-date"><span>📅 ${dataFmt}</span>${isNew?'<button class="copy-btn" onclick="copyTrend(this)">📋 Copiar</button>':''}</div>
+    <div class="trend-content">${(rel.conteudo||'').replace(/### (.*)/g,'<strong>$1</strong>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+  </div>`;
+  if(isNew) document.getElementById('trendResults').innerHTML=html;
+  return html;
+}
+
+function copyTrend(btn){
+  const content=btn.closest('.trend-card').querySelector('.trend-content').innerText;
+  navigator.clipboard.writeText(content).then(()=>{
+    btn.innerHTML='✅ Copiado!';btn.classList.add('copied');
+    setTimeout(()=>{btn.innerHTML='📋 Copiar';btn.classList.remove('copied');},1800);
+  });
+}
+
+async function loadTrendHistory(){
+  const el=document.getElementById('trendHistory');
+  try{
+    const resp=await fetch(SERVER+'/relatorio/historico');
+    const rels=await resp.json();
+    if(!rels.length){el.innerHTML='';return;}
+    // se não tem nenhum exibido ainda no trendResults, mostra o mais recente lá
+    const trendResultsEmpty=document.getElementById('trendResults').querySelector('.empty-state');
+    let htmlList=rels;
+    if(trendResultsEmpty){
+      document.getElementById('trendResults').innerHTML=renderTrendCard(rels[0],false);
+      htmlList=rels.slice(1);
+    }else{
+      htmlList=rels.slice(1);
+    }
+    if(htmlList.length){
+      el.innerHTML='<div class="trend-history-label">Relatórios anteriores</div>'+htmlList.map(r=>renderTrendCard(r,false)).join('');
+    }else{
+      el.innerHTML='';
+    }
+  }catch(e){el.innerHTML='';}
 }
 
 initDay();renderHistory();
+
+
 </script>
 </body>
 </html>
