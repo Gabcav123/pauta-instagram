@@ -195,6 +195,15 @@ body{
 }
 .copy-btn:hover{background:var(--sand);border-color:var(--clay-light)}
 .copy-btn.copied{color:var(--teal-dark);border-color:var(--teal-dark);background:var(--teal-light)}
+.cal-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:7px 14px;border:1px solid #C8DCC8;
+  border-radius:var(--radius-sm);background:#E8F0E8;
+  font-family:var(--sans);font-size:11px;font-weight:500;
+  color:#2D5A2D;cursor:pointer;transition:all .2s;min-height:36px;
+  letter-spacing:.02em;text-decoration:none;
+}
+.cal-btn:hover{background:#D4EBD4;border-color:#2D5A2D}
 
 /* ── SPINNER ── */
 .spinner{
@@ -635,7 +644,8 @@ function renderResults(sections,dia){
   sections.forEach((s,i)=>{
     const key=Object.keys(badgeColors).find(k=>s.title.toLowerCase().includes(k.toLowerCase()))||'Legenda';
     const c=badgeColors[key]||{bg:'#F1EFE8',color:'#444'};const ic=badgeIcons[key]||'📝';
-    html+=`<div class="result-card"><div class="result-badge" style="background:${c.bg};color:${c.color}">${ic} ${s.title}</div><div class="result-body" id="rb${i}">${s.body}</div><div class="result-actions"><button class="copy-btn" id="cb${i}" onclick="copyBlock(${i})">📋 Copiar</button></div></div>`;
+    const calLink=buildGCalLink(s.title,s.body,dia,key);
+    html+=`<div class="result-card"><div class="result-badge" style="background:${c.bg};color:${c.color}">${ic} ${s.title}</div><div class="result-body" id="rb${i}">${s.body}</div><div class="result-actions"><button class="copy-btn" id="cb${i}" onclick="copyBlock(${i})">📋 Copiar</button><a class="cal-btn" href="${calLink}" target="_blank" rel="noopener">📅 Agendar</a></div></div>`;
   });
   document.getElementById('results').innerHTML=html;
   window.scrollTo({top:document.getElementById('results').offsetTop-130,behavior:'smooth'});
@@ -646,6 +656,49 @@ function copyBlock(i){
     const btn=document.getElementById('cb'+i);btn.innerHTML='✅ Copiado!';btn.classList.add('copied');
     setTimeout(()=>{btn.innerHTML='📋 Copiar';btn.classList.remove('copied');},1800);
   });
+}
+
+// horários sugeridos por formato (baseado em melhores práticas para BR)
+const horariosPorFormato={
+  'Reels':   {h:9,  m:0,  dur:30}, // 9h — maior alcance orgânico
+  'Stories': {h:12, m:0,  dur:15}, // 12h — pico de engajamento no almoço
+  'Legenda': {h:18, m:0,  dur:30}, // 18h — junto com o post da tarde
+  'Carrossel':{h:11,m:0,  dur:30}, // 11h — bom para conteúdo educativo
+  'Hashtags': {h:18,m:0,  dur:15}, // junto com a legenda
+  'CTA':      {h:19,m:0,  dur:15}, // 19h — horário nobre
+};
+
+function buildGCalLink(titulo,corpo,dia,formato){
+  // calcular a data do próximo dia da semana correspondente
+  const diasSemana={
+    'Segunda':1,'Terça':2,'Quarta':3,'Quinta':4,
+    'Sexta':5,'Sábado':6,'Domingo':0
+  };
+  const hoje=new Date();
+  const alvo=diasSemana[dia]??hoje.getDay();
+  let diff=alvo-hoje.getDay();
+  if(diff<=0) diff+=7; // sempre próxima semana se já passou
+  const dataEvento=new Date(hoje);
+  dataEvento.setDate(hoje.getDate()+diff);
+
+  const hor=horariosPorFormato[formato]||{h:10,m:0,dur:30};
+  dataEvento.setHours(hor.h,hor.m,0,0);
+
+  const pad=n=>String(n).padStart(2,'0');
+  const fmt=d=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+
+  const inicio=fmt(dataEvento);
+  const fim=fmt(new Date(dataEvento.getTime()+hor.dur*60000));
+
+  const descricao=corpo.slice(0,800).replace(/\n/g,'\\n');
+  const params=new URLSearchParams({
+    action:'TEMPLATE',
+    text:`📲 ${titulo} — Instagram`,
+    dates:`${inicio}/${fim}`,
+    details:descricao,
+    location:'Instagram',
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
 function showSkeleton(count=3){
